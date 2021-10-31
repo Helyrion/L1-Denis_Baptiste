@@ -42,8 +42,11 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
+          children: const [
+            Icon(Icons.people),
+            Text('News'),
+            Icon(Icons.add),
+            /*IconButton(
                 onPressed: () => {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => LoginPage()))
@@ -55,7 +58,7 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => AddPage()))
                     },
-                icon: const Icon(Icons.add)),
+                icon: const Icon(Icons.add)),*/
           ],
         ),
       ),
