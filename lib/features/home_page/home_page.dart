@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_cine_list/features/home_page/logic/home_page_bloc.dart';
+import 'package:my_cine_list/repositories/post_repository/firebase_post.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -41,28 +42,43 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [Icon(Icons.people), Text('News'), Icon(Icons.add)],
+          children: [
+            IconButton(
+                onPressed: () => {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => LoginPage()))
+                    },
+                icon: const Icon(Icons.people)),
+            const Text('News'),
+            IconButton(
+                onPressed: () => {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => AddPage()))
+                    },
+                icon: const Icon(Icons.add)),
+          ],
         ),
       ),
       body: SingleChildScrollView(
-          child: BlocProvider<HomePageBloc>(
-              create: (BuildContext context) => HomePageBloc(),
-              child: BlocBuilder<HomePageBloc, HomePageState>(
+          child: BlocProvider<PostsBloc>(
+              create: (BuildContext context) =>
+                  PostsBloc(postsRepository: FirebasePostsRepository()),
+              child: BlocBuilder<PostsBloc, HomePageState>(
                   builder: (context, state) {
-                var homePageProvider = BlocProvider.of<HomePageBloc>(context);
+                var homePageProvider = BlocProvider.of<PostsBloc>(context);
                 if (state is HomePageInitial) {
-                  homePageProvider.add(HomePageGetData());
+                  homePageProvider.add(LoadPosts());
                 }
                 if (state is HomePageSuccess) {
-                  print(state.news);
-                  return Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      cardNews(
-                          'https://www.jeuneafrique.com/medias/2018/09/21/27171hr_-592x296.jpg',
-                          'Actu 1')
-                    ],
-                  );
+                  final posts = state.posts;
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: posts.length,
+                      itemBuilder: (context, index) {
+                        final post = posts[index];
+                        print(post);
+                        return Text(post.text);
+                      });
                 }
                 return const Center(
                   child: Text('Loading ...'),

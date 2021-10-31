@@ -15,10 +15,15 @@ class HomePageLoading extends HomePageState {
 }
 
 class HomePageSuccess extends HomePageState {
-  const HomePageSuccess(this.news);
-  final String news;
+  final List<Post> posts;
+
+  const HomePageSuccess([this.posts = const []]);
+
   @override
-  List<Object> get props => [news];
+  List<Object> get props => [posts];
+
+  @override
+  String toString() => 'HomePageSuccess { posts: $posts }';
 }
 
 class HomePageFailed extends HomePageState {
